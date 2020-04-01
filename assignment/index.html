@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <!-- CSS Imports -->
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/leaflet.css" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div id="intro">
+        <h1>Crime Map</h1>
+        <p class="main">There are 28 major crimes in Philadelphia in our data.</p>
+        <p>we can use the selection bar to select the criminal case and our map will show you the position of these cases in Philadelphia.</p>
+
+        <div >
+          <!-- <br>
+          Numeric filter: <input id="num1" type="number" name="num1" value=""> to <input id="num2" type="number" name="num2" value="">
+          <br> --> 
+          <label>Type of Crime:</label>  
+            <select id="selectType">
+              <option value ="Aggravated Assault Firearm" selected="selected" runat="server">Aggravated Assault Firearm</option>
+              <option value ="Aggravated Assault No Firearm" selected="selected" runat="server">Aggravated Assault No Firearm</option>
+              <option value="All Other Offenses" selected="selected" runat="server">All Other Offenses</option>
+              <option value="Arson" selected="selected" runat="server">Arson</option>
+              <option value="Burglary Non-Residential" selected="selected" runat="server">Burglary Non-Residential</option>
+              <option value="Burglary Residential" selected="selected" runat="server">Burglary Residential</option>
+              <option value="Disorderly Conduct" selected="selected" runat="server">Disorderly Conduct</option>
+              <option value="Embezzlement" selected="selected" runat="server">Embezzlement</option>
+              <option value="Forgery and Counterfeiting" selected="selected" runat="server">Forgery and Counterfeiting</option>
+              <option value="Fraud" selected="selected" runat="server">Fraud</option>
+              <option value="Gambling Violations" selected="selected" runat="server">Gambling Violations</option>
+              <option value="Homicide - Criminal" selected="selected" runat="server">Homicide - Criminal</option>
+              <option value="Liquor Law Violations" selected="selected" runat="server">Liquor Law Violations</option>
+              <option value="Motor Vehicle Theft" selected="selected" runat="server">Motor Vehicle Theft</option>
+              <option value="Narcotic / Drug Law Violations" selected="selected" runat="server">Narcotic / Drug Law Violations</option>
+              <option value="Offenses Against Family and Children" selected="selected" runat="server">Offenses Against Family and Children</option>
+              <option value="Other Assaults" selected="selected" runat="server">Other Assaults</option>
+              <option value="Other Sex Offenses (Not Commercialized)" selected="selected" runat="server">Other Sex Offenses (Not Commercialized)</option>
+              <option value="Public Drunkenness" selected="selected" runat="server">Public Drunkenness</option>
+              <option value="Rape" selected="selected" runat="server">Rape</option>
+              <option value="Recovered Stolen Motor Vehicle" selected="selected" runat="server">Recovered Stolen Motor Vehicle</option>
+              <option value="Robbery Firearm" selected="selected" runat="server">Robbery Firearm</option>
+              <option value="Robbery No Firearm" selected="selected" runat="server">Robbery No Firearm</option>
+              <option value="Theft from Vehicle" selected="selected" runat="server">Theft from Vehicle</option>
+              <option value="Thefts" selected="selected" runat="server">Thefts</option>
+              <option value="Vagrancy/Loitering" selected="selected" runat="server">Vagrancy/Loitering</option>
+              <option value="Vandalism/Criminal Mischief" selected="selected" runat="server">Vandalism/Criminal Mischief</option>
+              <option value="Weapon Violations" selected="selected" runat="server">Weapon Violations</option>
+            </select>  
+        </div>
+        <div class="next_button">
+          <button id="Next_1" class="button button1">Next</button>
+        </div>
+      </div>
+
+
+      <div id="results_2" style="display: none;">
+        <h1 class="day-of-week">Statistics of Crime Cases</h1>
+        <p class="main">Here we show the main case of the crime in Philadelphia. We used the histogram to count the number of these five cases.
+          Meanwhile, we hide the markers for other crime cases
+        </span>.</p>
+        <br>
+        <div>
+          <canvas id="bar-chart" width="1000" height="900"></canvas>
+        </div>
+
+        <div class="prev_button">
+          <button id="Previous_2" class="button button1">Previous</button>
+        </div>
+
+        <div class="next_button">
+          <button id="Next_2" class="button button1">Next</button>
+        </div>
+      </div>
+
+      <div id="results_3" style="display: none;">
+          <h1 class="day-of-week">The Cluster Center of the Top 5 Case</h1>
+
+          <p></p>
+          <div>
+            <label>Type of Crime:</label>  
+              <select id="selectType_top5">
+                <option value ="All Other Offenses" selected="selected" runat="server">All Other Offenses</option>
+                <option value ="Thefts" selected="selected" runat="server">Thefts</option>
+                <option value="Vandalism/Criminal Mischief" selected="selected" runat="server">Vandalism/Criminal Mischief</option>
+                <option value="Other Assaults" selected="selected" runat="server">Other Assaults</option>
+                <option value="Theft from Vehicle" selected="selected" runat="server">Theft from Vehicle</option>
+              </select>  
+          </div>
+
+          <div id= explain_1 style="display: none;"> 
+            <h1 class="day-of-week">All Other Offenses</h1>
+            <p> The total number of "All Other Offenses" case is 249, which accounts for 24.9% of all crimes. The center of these kind of crime is [39.9213222540323, -75.17864462096772]</p> 
+          </div>
+
+          <div id= explain_2 style="display: none;"> 
+            <h1 class="day-of-week">Thefts</h1>
+            <p> The total number of "Thefts" case is 137, which accounts for 13.7% of all crimes.The center of these kind of crime is [39.92012202189781, -75.18169464963505]</p>
+          </div>
+
+          <div id= explain_3 style="display: none;"> 
+            <h1 class="day-of-week">Vandalism/Criminal Mischief</h1>
+            <p> The total number of "Vandalism/Criminal Mischief" case is 115, which accounts for 11.5% of all crimes.The center of these kind of crime is [39.92414943362833, -75.179770539823]</p>
+          </div>
+
+          <div id= explain_4 style="display: none;"> 
+            <h1 class="day-of-week">Other Assaults</h1>
+            <p> The total number of "Other Assaults" case is 110, which accounts for 11.0% of all crimes.The center of these kind of crime is [39.92437215596331, -75.17976897247708]</p>
+
+          </div>
+
+          <div id= explain_5 style="display: none;"> 
+            <h1 class="day-of-week">Theft from Vehicle</h1>
+            <p> The total number of "Theft from Vehicle" case is 83, which accounts for 8.3% of all crimes.The center of these kind of crime is [39.922750746987965, -75.17775293975906]</p>
+
+          </div>
+
+          <div class="prev_button">
+            <button id="Previous_3" class="button button1">Previous</button>
+          </div>
+
+          <div class="next_button">
+            <button id="Next_3" class="button button1">Next</button>
+          </div>
+        </div>
+
+      <div id="results_4" style="display: none;">
+          <h1 class="day-of-week">Crime Statistics by Block</h1>
+          <h2 ></h2>
+          <p class="P1"></p>
+          <br>
+          <div>We can find that most of the crime cases in this area of Philadelphia are concentrated in the central block.</div>
+          
+
+          <div class="prev_button">
+            <button id="Previous_4" class="button button1">Previous</button>
+          </div>
+
+          <div class="next_button">
+            <button id="Next_4" class="button button1">Next</button>
+          </div>
+        </div>
+
+      <div id="results_5" style="display: none;">
+        <h1 class="day-of-week">Page_5</h1>
+        <p class="main">Your garbage collection day is <span class="day-of-week">
+        Day of Week</span>.</p>
+        <p>Please be sure to leave your garbage outside on <span class="day-of-week">
+        Day of Week</span>. If this week is a federal holiday, leave your
+        garbage outside on the following day.</p>
+
+        <div class="prev_button">
+          <button id="Previous_5" class="button button1">Previous</button>
+        </div>
+      </div>
+    </div>
+    <!-- Map -->
+    <div id="map" class="map"></div>
+    
+    <!-- Javascript Imports -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+    <script src="js/jquery-2.2.0.js"></script>
+    <script src="js/underscore.js"></script>
+    <script src="js/leaflet.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
