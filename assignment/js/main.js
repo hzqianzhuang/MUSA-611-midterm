@@ -14,11 +14,12 @@ var list_unquie = [];
 var list_number = [];
 var featureGroup;
 
-
+// get the parsed data
 var getAndParseData = function(Data) {
   return JSON.parse(Data);
 };
 
+// we make a list of markers
 var makeMarkers = function(data) {
   var markers = [];
   for(var i = 0; i<data.length; i++){
@@ -31,6 +32,7 @@ var makeMarkers = function(data) {
   return markers;
 };
 
+// this function is going to plot the markers
 var plotMarkers = function(marks) {
   for(var i = 0; i< marks.length; i++){
     marks[i].addTo(map);
@@ -38,6 +40,7 @@ var plotMarkers = function(marks) {
   myMarkers = marks;
 };
 
+// this function is going to remove the markers
 var resetMap = function() {
   for(var i = 0; i< myMarkers.length; i++){
     map.removeLayer(myMarkers[i]);
@@ -58,7 +61,7 @@ var Stamen_TonerLite = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{
   ext: 'png'
 }).addTo(map);
 
-
+// using json to get a list of each kind of crime name
 $(document).ready(function() {
   $.ajax(crimeData).done(function(data) {
     var parsed = getAndParseData(data);
@@ -73,6 +76,7 @@ $(document).ready(function() {
 });
 
 
+// Filter the crime which is in the list(top 5 kind of crime)
 var makeMarkersInList = function(data, code) {
   var markers = [];
   for(var i = 0; i<data.length; i++){
@@ -85,6 +89,7 @@ var makeMarkersInList = function(data, code) {
   return markers;
 };
 
+// This function is going to add the top 5 kind crime into the list
 var makeMarkersTop_5= function(data, code_list) {
   var markers = [];
   for(var i = 0; i<data.length; i++){
@@ -97,6 +102,8 @@ var makeMarkersTop_5= function(data, code_list) {
   return markers;
 };
 
+
+// this function is going to find the center for each cluster (top 5). We just calculate the mean of each point
 var makeMarkersTop_5_center= function(data, code_list) {
   var markers = [];
   for(var j = 0; j<code_list.length; j++){
@@ -119,6 +126,7 @@ var makeMarkersTop_5_center= function(data, code_list) {
   return markers;
 };
 
+// hide all the explain div
 var hideAllTopFive = function(){
   $('#explain_1').hide();
   $('#explain_2').hide();
@@ -127,7 +135,7 @@ var hideAllTopFive = function(){
   $('#explain_5').hide();
 };
 
-
+// when the select change the function will run. And which will show the type of crime we choose.
 $("#selectType").change(function() {
   $.ajax(crimeData).done(function(data) {
     var code = document.getElementById("selectType").value;
@@ -138,7 +146,7 @@ $("#selectType").change(function() {
   });
 });
 
-
+// when the select change the function will run. And the map will zoom into the point.
 $("#selectType_top5").change(function() {
   hideAllTopFive();
   var divNum = document.getElementById("selectType_top5").value;
@@ -169,6 +177,8 @@ $("#selectType_top5").change(function() {
   }
 });
 
+// set function for each button
+//button#Next_1 show all the point
 $("button#Next_1").click(function(){
   $('#intro').hide();
   $('#results_2').show();
@@ -181,6 +191,7 @@ $("button#Next_1").click(function(){
   });
 });
 
+//button#Next_2 show the point we choose (top 5)
 $("button#Next_2").click(function(){
   $('#results_2').hide();
   $('#results_3').show();
@@ -192,6 +203,7 @@ $("button#Next_2").click(function(){
   });
 });
 
+//button#Next_3 show the cluster center for the top 5
 $("button#Next_3").click(function(){
   $('#results_3').hide();
   $('#results_4').show();
@@ -199,12 +211,22 @@ $("button#Next_3").click(function(){
   setTrackMap(sjoin);
 });
 
+//button#Next_4 show the ploygon
 $("button#Next_4").click(function(){
   $('#results_4').hide();
   $('#results_5').show();
   map.removeLayer(featureGroup);
+  setTrackMap(sjoin);
+  $.ajax(crimeData).done(function(data) {
+    var parsed = getAndParseData(data);
+    var markers = makeMarkersTop_5_center(parsed.features,list_unquie.slice(0,5));
+    resetMap();
+    plotMarkers(markers);
+  });
+  map.setView([39.92437215596331, -75.17976897247708], 18)
 });
 
+//These buttons just for go back
 $("button#Previous_2").click(function(){
   $('#results_2').hide();
   $('#intro').show();
@@ -240,13 +262,14 @@ $("button#Previous_4").click(function(){
 });
 
 $("button#Previous_5").click(function(){
+  map.removeLayer(featureGroup);
   $('#results_5').hide();
   $('#results_4').show();
   resetMap();
   setTrackMap(sjoin);
 });
 
-
+// using ajax find the crime data and push into myList
 $.ajax(crimeData).done(function(data) {
   var parsed = getAndParseData(data);
   for(var i = 0; i<parsed.features.length; i++){
@@ -254,20 +277,20 @@ $.ajax(crimeData).done(function(data) {
       myList.push(parsed.features[i].properties.text_general_code);
     }
   }
-
+  // find the unquied data and make a list
   for(var i = 0; i<myList.length; i++){
     if(list_unquie.indexOf(myList[i]) == -1){
       list_unquie.push(myList[i]);
     }
   }
-
+  // this list is the number of each unquied crimal data
   var test_list = new Array(list_unquie.length).fill(0);
   for(var i = 0; i<myList.length; i++){
     test_list[list_unquie.indexOf(myList[i])]++;
   }
 
   list_number = test_list;
-
+  // using bubble sort to sorting the list-unquied and list-test
   for(var i = 0; i<list_number.length-1; i++){
     for(var j = 0; j<list_number.length-1-i; j++){
         if(list_number[j]<list_number[j+1]){
@@ -282,14 +305,18 @@ $.ajax(crimeData).done(function(data) {
     }
   }
 
+  // create the chart json
   new Chart(document.getElementById("bar-chart"), {
     type: 'bar',
     data: {
+      // set the labels for the top 5 crime
       labels: list_unquie.slice(0,5),
       datasets: [
         {
           label: "Number of cases",
+          //set the background color
           backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+          //set the data as the first five in list-number
           data: list_number.slice(0,5)
         }
       ]
@@ -305,8 +332,9 @@ $.ajax(crimeData).done(function(data) {
 
 });
 
+//This funciton is going to set the track polygon
 var setTrackMap = function(url){
-
+  // this function is going to change the text
   var showResults = function(text,count) {
     $("#results_4 > h2").text(text);
     if(count <= 10){
@@ -323,8 +351,9 @@ var setTrackMap = function(url){
     }
   };
   
-
+  // group for polygon
   featureGroup = [];
+  //set the style (color of each ploygon)
   var myStyle = function(feature) {
     if(feature.properties.count <= 10){
       return {fillColor: 'green'};
@@ -340,6 +369,7 @@ var setTrackMap = function(url){
     }
   };
   
+  // for each set the click function for each polygon
   var eachFeatureFunction = function(layer) {
     layer.on('click', function (event) {
       //console.log(layer.feature);
@@ -350,6 +380,7 @@ var setTrackMap = function(url){
     });
   };
   
+  // set filter
   var myFilter = function(feature) {
     if(feature.properties.count == null){
       console.log(feature.properties.COLLDAY);
@@ -359,6 +390,7 @@ var setTrackMap = function(url){
     }
   };
   
+  // run the ajax when document ready
   $(document).ready(function() {
     $.ajax(url).done(function(data) {
       var parsedData = JSON.parse(data);
