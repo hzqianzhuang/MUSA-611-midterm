@@ -4,6 +4,22 @@ body {
     font-family: colfax, helvetica, arial, sans-serif;
 }
 
+li{
+  list-style:none;
+  padding-bottom: 5px;
+}
+
+span{
+  opacity:0.7;
+  display:block;
+  float:left;
+  margin-right:10px;
+  height:16px;
+  width:16px;
+  border-radius: 50%;
+}
+
+
 p.main {
   font-size: 24px;
 }
@@ -15,6 +31,7 @@ p.main {
     height: 100%;
     top: 0;
 }
+
 
 .sidebar {
     position: absolute;
